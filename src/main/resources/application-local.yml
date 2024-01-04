@@ -1,0 +1,25 @@
+spring:
+    application:
+        name: sample-project
+    data:
+        mongodb:
+            uri: mongodb://admin:E6wYNuScwVha3ku7cPWS6jl4KTlDIsxh@18.143.46.88:32166/sophea?authSource=admin&directConnection=true
+#            uri: mongodb://mongoadmin:secret@localhost:27017/oauth?authSource=admin&directConnection=true
+#    datasource:
+#        driver-class-name: org.postgresql.Driver
+#        url: jdbc:postgresql://18.143.46.88:31672/service-identity
+#        username: admin
+#        password: m9NUOgb7xi6M3TKjstcHPXSF8EosmcJC
+
+server:
+    port: 8080
+    address: 0.0.0.0
+
+logging:
+    level:
+        org:
+            springframework:
+                data:
+                    mongodb:
+                        core:
+                            MongoTemplate: DEBUG
