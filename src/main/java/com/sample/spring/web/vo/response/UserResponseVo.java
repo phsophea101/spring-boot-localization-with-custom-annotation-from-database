@@ -11,7 +11,7 @@ import java.util.List;
 public class UserResponseVo {
     private String id;
     private String name;
-    @I18NProperty(fieldId = "gender", type = "gender",locale = "km")
+    @I18NProperty(fieldId = "gender", type = "gender.label")
     private String gender;
     private String username;
     private String status;

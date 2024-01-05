@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.sample.spring.jackson.annotation.I18NProperty;
+import com.sample.spring.util.ContextUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.ObjectUtils;
@@ -15,15 +16,18 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.i18n.LocaleContextHolder;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Slf4j
 public class I18NSerializer extends StdSerializer<Object> {
     private static final long serialVersionUID = -2391442805192997903L;
     private final I18NProvider provider;
+
     public I18NSerializer(I18NProvider provider) {
         super(Object.class);
         this.provider = provider;
     }
+
     @Override
     public void serialize(Object value, JsonGenerator gen, SerializerProvider provider) throws IOException {
         String message = this.getI18NProperty(value, gen);
@@ -32,6 +36,7 @@ public class I18NSerializer extends StdSerializer<Object> {
         else
             gen.writeNull();
     }
+
     @Override
     public void serializeWithType(Object value, JsonGenerator gen, SerializerProvider serializers, TypeSerializer typeSer) throws IOException {
         String message = this.getI18NProperty(value, gen);
@@ -40,13 +45,16 @@ public class I18NSerializer extends StdSerializer<Object> {
         else
             gen.writeNull();
     }
+
     private String getI18NProperty(Object value, JsonGenerator gen) {
         try {
-            ObjectMapper objectMapper = (ObjectMapper) gen.getCodec();
-            PropertyNamingStrategy namingStrategy = objectMapper.getPropertyNamingStrategy();
             String fieldName = gen.getOutputContext().getCurrentName();
-            if (PropertyNamingStrategies.SNAKE_CASE.equals(namingStrategy))
-                fieldName = this.snakeCaseToCamelCase(fieldName);
+            Optional<ObjectMapper> bean = ContextUtil.optBean(ObjectMapper.class);
+            if (bean.isPresent()) {
+                PropertyNamingStrategy namingStrategy = bean.get().getPropertyNamingStrategy();
+                if (ObjectUtils.isNotEmpty(namingStrategy) && PropertyNamingStrategies.SNAKE_CASE.getClass().equals(namingStrategy.getClass()))
+                    fieldName = this.snakeCaseToCamelCase(fieldName);
+            }
             Object obj = gen.getCurrentValue();
             I18NProperty annotation = obj.getClass().getDeclaredField(fieldName).getAnnotation(I18NProperty.class);
             String locale = annotation.locale();
@@ -58,6 +66,7 @@ public class I18NSerializer extends StdSerializer<Object> {
             return String.valueOf(value);
         }
     }
+
     private String snakeCaseToCamelCase(String string) {
         if (ObjectUtils.isEmpty(string)) return string;
         StringBuilder sb = new StringBuilder(string);

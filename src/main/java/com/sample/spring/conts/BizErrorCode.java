@@ -7,6 +7,7 @@ public enum BizErrorCode implements ErrorCodeType {
     E0000("E0000", "General exception error."),
     E0001("E0001", "Accept language header not support for [%s]."),
     E0002("E0002", "Record not found."),
+    E0003("E0003", "Valid field validation."),
     ;
 
     final String value;

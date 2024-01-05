@@ -11,8 +11,10 @@ import com.sample.spring.web.vo.response.ResponseVOBuilder;
 import com.sample.spring.web.vo.response.UserResponseVo;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -36,7 +38,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseVO<UserResponseVo> save(@RequestBody UserRequestVo vo) {
+    public ResponseVO<UserResponseVo> save(@RequestBody @Valid UserRequestVo vo) {
         UserDto dto = UserMapper.INSTANCE.voToDto(vo);
         this.service.save(dto);
         UserResponseVo responseVo = UserMapper.INSTANCE.dtoToVo(dto);

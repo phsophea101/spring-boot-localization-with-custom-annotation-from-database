@@ -18,11 +18,12 @@ public class SmartLocaleResolver extends AcceptHeaderLocaleResolver {
     public Locale resolveLocale(HttpServletRequest request) {
         Locale defaultLocale = new Locale("en");
         List<Locale> supportedLocales = Arrays.asList(new Locale("km"), new Locale("en"), new Locale("kr"));
-        if (StringUtils.isBlank(request.getHeader("Accept-Language"))) {
+        String headerLocale = request.getHeader("Accept-Language");
+        if (StringUtils.isBlank(headerLocale)) {
             return defaultLocale;
         }
         this.setSupportedLocales(supportedLocales);
-        List<Locale.LanguageRange> list = Locale.LanguageRange.parse(request.getHeader("Accept-Language"));
+        List<Locale.LanguageRange> list = Locale.LanguageRange.parse(headerLocale);
         Locale locale = Locale.lookup(list, getSupportedLocales());
         if (ObjectUtils.isEmpty(locale))
             throw new BizException(BizErrorCode.E0001, String.format(BizErrorCode.E0001.getDescription(), list.get(0)));

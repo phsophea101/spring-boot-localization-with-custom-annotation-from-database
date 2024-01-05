@@ -32,7 +32,7 @@ public class CustomErrorAttributes extends DefaultErrorAttributes {
         String description = message;
         if (exception instanceof BizException) {
             code = ((BizException) exception).getError().getValue();
-            message = ((BizException) exception).getError().getDescription();
+            message = ((BizException) exception).getDescription();
         } else if (exception instanceof Exception) {
             description = ((Exception) exception).getMessage();
         } else {
@@ -40,7 +40,7 @@ public class CustomErrorAttributes extends DefaultErrorAttributes {
         }
         error.putIfAbsent("code", code);
         error.putIfAbsent("message", message);
-        error.putIfAbsent("description", description);
+        error.putIfAbsent("descriptions", description);
         response.putIfAbsent("status", String.valueOf(status));
         response.putIfAbsent("result", "Failed");
         if (!code.equalsIgnoreCase(BizErrorCode.E0001.getValue()))

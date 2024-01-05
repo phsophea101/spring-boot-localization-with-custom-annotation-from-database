@@ -5,6 +5,7 @@ import com.sample.spring.jackson.I18NProvider;
 import com.sample.spring.repository.I18nRepository;
 import com.sample.spring.service.I18nService;
 import lombok.AllArgsConstructor;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,8 @@ public class I18nServiceImpl implements I18nService, I18NProvider {
 
     @Override
     public String getMessage(String key, String type, String locale, String defaultMessage) {
+        if (ObjectUtils.anyNull(key, type, locale))
+            return defaultMessage;
         I18nEntity entity = new I18nEntity();
         entity.setKey(key);
         entity.setType(type);
@@ -24,7 +27,7 @@ public class I18nServiceImpl implements I18nService, I18NProvider {
         entity.setStatus("ACTIVE");
         Optional<I18nEntity> nEntity = this.repository.findOne(Example.of(entity));
         if (nEntity.isPresent())
-           return nEntity.get().getMessage();
+            return nEntity.get().getMessage();
         return defaultMessage;
     }
 }
